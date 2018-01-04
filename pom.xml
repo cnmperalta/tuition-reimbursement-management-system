@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.revature.projects</groupId>
+  <artifactId>trms</artifactId>
+  <version>1</version>
+  <packaging>war</packaging>
+
+  <name>trms</name>
+  <url>http://maven.apache.org</url>
+
+  <dependencies>
+    <!-- Add JUnit as a dependency -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Add JDBC as a dependency -->
+    <dependency>
+      <groupId>com.oracle.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <version>12.2.0.1</version>
+    </dependency>
+    <!-- Add the javax.servlet-api as a dependency -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Add Jackson as a dependency -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.5.3</version>
+    </dependency>
+    <!-- Add log4j as a dependency -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.10.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.10.0</version>
+    </dependency>
+  </dependencies>
+
+  <!-- Use the Oracle Maven repository to get the latest version of JDBC -->
+  <repositories>
+    <repository>
+      <id>maven.oracle.com</id>
+      <name>oracle-maven-repo</name>
+      <url>https://maven.oracle.com</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+    </repository>
+  </repositories>
+  
+  <!-- Use the Oracle Maven plugin repository to get the latest version of JDBC -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven.oracle.com</id>
+      <name>oracle-maven-repo</name> 
+      <url>https://maven.oracle.com</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <!-- Customize build options using plugins -->
+  <build>
+    <plugins>
+      <!-- Use maven-dependency-plugin to copy external dependencies to a folder within the project -->
+      <!-- Allows the usage of these libraries at run-time (in addition to compile-time) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/library/</outputDirectory>
+              <includeScope>runtime</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Use maven-compiler-plugin to set the version of Java to 1.8 (Java 8) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <verbose>true</verbose>
+          <fork>true</fork>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <!-- Add the tomcat7-maven-plugin to easily deploy the webapp to a Tomcat server -->
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <url>http://localhost:8082/manager/text</url>
+          <server>TomcatServer</server>
+          <path>/TRMS</path>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
