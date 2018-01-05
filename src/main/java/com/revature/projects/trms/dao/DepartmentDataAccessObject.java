@@ -2,9 +2,11 @@ package com.revature.projects.trms.dao;
 
 import com.revature.projects.trms.beans.Department;
 
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,6 +60,7 @@ public class DepartmentDataAccessObject extends  GenericDataAccessObject<Departm
     try {
       String sql = "select * from Department where DepartmentID=?";
       ps = connection.prepareStatement(sql);
+      ps.setInt(1, id);
       rs = ps.executeQuery();
       
       if(rs.next()) {
@@ -69,7 +72,20 @@ public class DepartmentDataAccessObject extends  GenericDataAccessObject<Departm
       }
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      try {
+        if(ps != null && !ps.isClosed()) ps.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+
+      try {
+        if(rs != null && !rs.isClosed()) rs.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
+    System.out.println("Returning: " + d);
 		return d;
 	}
 
@@ -101,6 +117,30 @@ public class DepartmentDataAccessObject extends  GenericDataAccessObject<Departm
 	@Override
 	public int getCount() {
 		return 0;
-	}
+  }
+  
+  @Override
+  public int getCurrentID() {
+    CallableStatement cs = null;
+    int currentID = 0;
+
+    try {
+      String sql = "{ CALL SP_Get_Curr_DepartmentID(?) }";
+      cs = connection.prepareCall(sql);
+      cs.registerOutParameter(1, Types.INTEGER);
+      cs.execute();
+      currentID = cs.getInt(1);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if(cs != null && !cs.isClosed()) cs.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return currentID;
+  }
 
 }

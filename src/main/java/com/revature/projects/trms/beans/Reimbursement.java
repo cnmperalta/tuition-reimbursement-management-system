@@ -10,6 +10,7 @@ public class Reimbursement {
   private String description;
   private String workRelatedJustification;
   private BigDecimal amountRequested;
+  private String additionalInformation;
   private String reimbursementStatus;
   private ZonedDateTime dateSubmitted;
   private ZonedDateTime dateCompleted;
@@ -19,31 +20,40 @@ public class Reimbursement {
 
   public Reimbursement() {}
 
-  public Reimbursement(int requesterId, String description, String workRelatedJustification, BigDecimal amountRequested, String reimbursementStatus, ZonedDateTime dateSubmitted, Event event, List<InformationRequest> informationRequests) {
+  public Reimbursement(int requesterId, String description, String workRelatedJustification, BigDecimal amountRequested, String additionalInformation, String reimbursementStatus, ZonedDateTime dateSubmitted, Event event) {
     this.requesterId = requesterId;
     this.description = description;
     this.workRelatedJustification = workRelatedJustification;
     this.amountRequested = amountRequested;
+    this.additionalInformation = additionalInformation;
     this.reimbursementStatus = reimbursementStatus;
     this.dateSubmitted = dateSubmitted;
     this.dateCompleted = null;
     this.event = event;
     this.response = null;
-    this.informationRequests = informationRequests;
+    this.informationRequests = null;
   }
 
-  public Reimbursement(int reimbursementId, int requesterId, String description, String workRelatedJustification, BigDecimal amountRequested, String reimbursementStatus, ZonedDateTime dateSubmitted, ZonedDateTime dateCompleted, Event event, ReimbursementResponse response, List<InformationRequest> informationRequests) {
+  public Reimbursement(int reimbursementId, int requesterId, String description, String workRelatedJustification, BigDecimal amountRequested, String additionalInformation, String reimbursementStatus, ZonedDateTime dateSubmitted, ZonedDateTime dateCompleted, Event event, ReimbursementResponse response, List<InformationRequest> informationRequests) {
     this.reimbursementId = reimbursementId;
     this.requesterId = requesterId;
     this.description = description;
     this.workRelatedJustification = workRelatedJustification;
     this.amountRequested = amountRequested;
+    this.additionalInformation = additionalInformation;
     this.reimbursementStatus = reimbursementStatus;
     this.dateSubmitted = dateSubmitted;
     this.dateCompleted = dateCompleted;
     this.event = event;
     this.response = response;
     this.informationRequests = informationRequests;
+  }
+
+  /**
+   * @return the additionalInformation
+   */
+  public String getAdditionalInformation() {
+    return additionalInformation;
   }
 
   /**
@@ -121,6 +131,13 @@ public class Reimbursement {
    */
   public String getWorkRelatedJustification() {
     return workRelatedJustification;
+  }
+
+  /**
+   * @param additionalInformation the additionalInformation to set
+   */
+  public void setAdditionalInformation(String additionalInformation) {
+    this.additionalInformation = additionalInformation;
   }
 
   /**

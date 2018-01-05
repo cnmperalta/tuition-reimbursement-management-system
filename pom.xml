@@ -48,6 +48,12 @@
       <artifactId>log4j-core</artifactId>
       <version>2.10.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+    <dependency>
+      <groupId>com.auth0</groupId>
+      <artifactId>java-jwt</artifactId>
+      <version>3.3.0</version>
+    </dependency>
   </dependencies>
 
   <!-- Use the Oracle Maven repository to get the latest version of JDBC -->
@@ -95,7 +101,7 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/library/</outputDirectory>
+              <outputDirectory>${project.build.directory}/lib/</outputDirectory>
               <includeScope>runtime</includeScope>
             </configuration>
           </execution>

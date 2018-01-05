@@ -2,9 +2,11 @@ package com.revature.projects.trms.dao;
 
 import com.revature.projects.trms.beans.Location;
 
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -144,4 +146,27 @@ public class LocationDataAccessObject extends GenericDataAccessObject<Location> 
 		return 0;
 	}
 
+  @Override
+  public int getCurrentID() {
+    CallableStatement cs = null;
+    int currentID = 0;
+
+    try {
+      String sql = "{ CALL SP_Get_Curr_LocID(?) }";
+      cs = connection.prepareCall(sql);
+      cs.registerOutParameter(1, Types.INTEGER);
+      cs.execute();
+      currentID = cs.getInt(1);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if(cs != null && !cs.isClosed()) cs.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return currentID;
+  }
 }

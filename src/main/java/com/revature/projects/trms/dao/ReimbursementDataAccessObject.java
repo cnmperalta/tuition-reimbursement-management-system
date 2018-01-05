@@ -57,6 +57,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 			String description = rs.getString("Description");
 			String workRelatedJustification = rs.getString("WorkRelatedJustification");
 			BigDecimal amountRequested = rs.getBigDecimal("ReimbursementAmountRequested");
+			String additionalInformation = rs.getString("AdditionalInformation");
 			int reimbursementStatusId = rs.getInt("ReimbursementStatusID");
 			ZonedDateTime dateSubmitted = rs.getObject("DateSubmitted", ZonedDateTime.class);
 			ZonedDateTime dateCompleted = rs.getObject("DateCompleted", ZonedDateTime.class);
@@ -74,6 +75,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 				description,
 				workRelatedJustification,
 				amountRequested,
+				additionalInformation,
 				reimbursementStatuses.get(reimbursementStatusId),
 				dateSubmitted,
 				dateCompleted,
@@ -136,6 +138,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 				String description = rs.getString("Description");
 				String workRelatedJustification = rs.getString("WorkRelatedJustification");
 				BigDecimal amountRequested = rs.getBigDecimal("ReimbursementAmountRequested");
+				String additionalInformation = rs.getString("AdditionalInformation");
 				int reimbursementStatusId = rs.getInt("ReimbursementStatusID");
 				ZonedDateTime dateSubmitted = rs.getObject("DateSubmitted", ZonedDateTime.class);
 				ZonedDateTime dateCompleted = rs.getObject("DateCompleted", ZonedDateTime.class);
@@ -153,6 +156,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 					description,
 					workRelatedJustification,
 					amountRequested,
+					additionalInformation,
 					reimbursementStatuses.get(reimbursementStatusId),
 					dateSubmitted,
 					dateCompleted,
@@ -227,16 +231,17 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 		PreparedStatement ps = null;
 
 		try {
-			String sql = "insert into Reimbursement (RequesterID, Description, WorkRelatedJustification, ReimbursementAmountRequested, ReimbursementStatusID, DateSubmitted, EventID) values (?, ?, ?, ?, ?, ?, ?)";
+			String sql = "insert into Reimbursement (RequesterID, Description, WorkRelatedJustification, ReimbursementAmountRequested, AdditionalInformation, ReimbursementStatusID, DateSubmitted, EventID) values (?, ?, ?, ?, ?, ?, ?, ?)";
 
 			ps = connection.prepareStatement(sql);
 			ps.setInt(1, e.getReimbursementId());
 			ps.setString(2, e.getDescription());
 			ps.setString(3, e.getWorkRelatedJustification());
 			ps.setBigDecimal(4, e.getAmountRequested());
-			ps.setInt(5, reimbursementStatusesReversed.get(e.getReimbursementStatus()));
-			ps.setTimestamp(6, Timestamp.from(e.getDateSubmitted().toInstant()));
-			ps.setInt(7, e.getEvent().getEventId());
+			ps.setString(5, e.getAdditionalInformation());
+			ps.setInt(6, reimbursementStatusesReversed.get(e.getReimbursementStatus()));
+			ps.setTimestamp(7, Timestamp.from(e.getDateSubmitted().toInstant()));
+			ps.setInt(8, e.getEvent().getEventId());
 
 			ps.execute();
 		} catch (SQLException ex) {
@@ -352,4 +357,28 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 		}
     return reimbursementCount;
 	}
+
+	@Override
+  public int getCurrentID() {
+    CallableStatement cs = null;
+    int currentID = 0;
+
+    try {
+      String sql = "{ CALL SP_Get_Curr_ReimbursementID(?) }";
+      cs = connection.prepareCall(sql);
+      cs.registerOutParameter(1, Types.INTEGER);
+      cs.execute();
+      currentID = cs.getInt(1);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if(cs != null && !cs.isClosed()) cs.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return currentID;
+  }
 }

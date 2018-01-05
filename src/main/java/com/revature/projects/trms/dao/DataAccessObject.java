@@ -11,4 +11,5 @@ public interface DataAccessObject<T> {
   public void deleteByAttribute(String attributeName, Object attributeValue);
   public void updateAttribute(int id, String attributeName, Object attributeValue);
   public int getCount();
+  public int getCurrentID();
 }

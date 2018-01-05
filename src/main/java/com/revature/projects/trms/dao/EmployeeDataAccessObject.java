@@ -338,6 +338,30 @@ public class EmployeeDataAccessObject extends GenericDataAccessObject<Employee> 
     }
 
 		return employeeCount;
-	}
+  }
+  
+  @Override
+  public int getCurrentID() {
+    CallableStatement cs = null;
+    int currentID = 0;
+
+    try {
+      String sql = "{ CALL SP_Get_Curr_EmployeeID(?) }";
+      cs = connection.prepareCall(sql);
+      cs.registerOutParameter(1, Types.INTEGER);
+      cs.execute();
+      currentID = cs.getInt(1);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if(cs != null && !cs.isClosed()) cs.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return currentID;
+  }
 
 }
