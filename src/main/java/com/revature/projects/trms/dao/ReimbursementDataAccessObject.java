@@ -66,6 +66,8 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 			int reimbursementResponseId = rs.getInt("ReimbursementResponseID");
 			
 			eventDao.checkConnection();
+			informationRequestDao.checkConnection();
+			reimbursementResponseDao.checkConnection();
 			event = eventDao.getById(eventId);
 			infoRequests = informationRequestDao.getByAttribute("ReimbursementID", reimbursementId);
 			reimResponse = reimbursementResponseDao.getById(reimbursementResponseId);
@@ -201,7 +203,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 
 			ps = connection.prepareStatement(sql);
 			
-			if(attributeName.endsWith("ID"))
+			if(attributeName.endsWith("ID") || attributeName.equalsIgnoreCase("AssignTo"))
 				ps.setInt(1, (Integer) attributeValue);
 			else if(attributeName.endsWith("Date"))
 				ps.setTimestamp(1, Timestamp.from(((ZonedDateTime) attributeValue).toInstant()));
@@ -301,7 +303,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 			String sql = "delete from Reimbursement where " + attributeValue + "=?";
 			ps = connection.prepareStatement(sql);
 			
-			if(attributeName.endsWith("ID"))
+			if(attributeName.endsWith("ID") || attributeName.equalsIgnoreCase("AssignTo"))
 				ps.setInt(1, (Integer) attributeValue);
 			else if(attributeName.endsWith("Date"))
 				ps.setTimestamp(1, Timestamp.from(((ZonedDateTime) attributeValue).toInstant()));
@@ -327,10 +329,10 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 		PreparedStatement ps = null;
 		
 		try {
-			String sql = "update Reimbursement set " + attributeValue + "=? where ReimbursementID=?";
+			String sql = "update Reimbursement set " + attributeName + "=? where ReimbursementID=?";
 			ps = connection.prepareStatement(sql);
 			
-			if(attributeName.endsWith("ID"))
+			if(attributeName.endsWith("ID") || attributeName.equalsIgnoreCase("AssignTo"))
 				ps.setInt(1, (Integer) attributeValue);
 			else if(attributeName.endsWith("Date"))
 				ps.setTimestamp(1, Timestamp.from(((ZonedDateTime) attributeValue).toInstant()));

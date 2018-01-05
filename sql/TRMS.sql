@@ -596,6 +596,22 @@ update Employee
 	 set DirectSupervisorID=10
  where EmployeeID between 181 and 200;
 
+update Employee
+	 set DepartmentID=1
+ where EmployeeID=1;
+update Employee
+	 set DepartmentID=2
+ where EmployeeID=2;
+update Employee
+	 set DepartmentID=3
+ where EmployeeID=3;
+update Employee
+	 set DepartmentID=4
+ where EmployeeID=4;
+update Employee
+	 set DepartmentID=5
+ where EmployeeID=5;
+
 -- set department heads
 update Employee
 	 set DepartmentID=1

@@ -49,18 +49,23 @@ public class LoginServlet extends HttpServlet {
     dDao.checkConnection();
     etDao.checkConnection();
 
-    System.out.println(json);
     lc = mapper.readValue(json, LoginCredentials.class);
     emp = eDao.getByEmailAddress(lc.getEmailAddress());
+    System.out.println("Department ID: " + emp.getDepartmentId());
+    System.out.println("EmployeeType: " + emp.getEmployeeTypeId());
     dept = dDao.getById(emp.getDepartmentId());
     empType = etDao.getById(emp.getEmployeeTypeId());
 
-    System.out.println(emp);
+    System.out.println(emp.getDepartmentId());
 
-    if(emp.getLastLogin() != null)
-      si = new SessionInformation(emp.getEmployeeId(), emp.getDirectSupervisorId(), dept.getDepartmentHeadId(), empType.getEmployeeType(), emp.getLastLogin(), true);
-    else
-      si = new SessionInformation(emp.getEmployeeId(), emp.getDirectSupervisorId(), dept.getDepartmentHeadId(), empType.getEmployeeType(), emp.getLastLogin(), false);
+    if(lc.getPassword().equals(emp.getPassword())) {
+      if(emp.getLastLogin() != null)
+        si = new SessionInformation(emp.getEmployeeId(), emp.getDirectSupervisorId(), dept.getDepartmentHeadId(), empType.getEmployeeType(), emp.getLastLogin(), true);
+      else
+        si = new SessionInformation(emp.getEmployeeId(), emp.getDirectSupervisorId(), dept.getDepartmentHeadId(), empType.getEmployeeType(), emp.getLastLogin(), false);
+    } else
+      si = new SessionInformation(0,0,0, "Invalid Login", null, false);
+    
     
     session.setAttribute("EmployeeID", emp.getEmployeeId());
 

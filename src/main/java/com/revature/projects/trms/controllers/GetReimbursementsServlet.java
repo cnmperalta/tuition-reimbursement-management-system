@@ -33,8 +33,13 @@ public class GetReimbursementsServlet extends HttpServlet {
     String jsonResponse = null;
 
     rDao.checkConnection();
-
-    reimbursements = rDao.getByAttribute("RequesterID", eid.getRequesterID());
+    
+    if(eid.getEmployeeType().equals("Employee")) {
+      reimbursements = rDao.getByAttribute("RequesterID", eid.getRequesterID());
+    } else {
+      reimbursements = rDao.getByAttribute("AssignTo", eid.getRequesterID());
+    }
+    
     jsonResponse = mapper.writeValueAsString(reimbursements);
     System.out.println(jsonResponse);
     resp.getWriter().write(jsonResponse);
@@ -44,6 +49,14 @@ public class GetReimbursementsServlet extends HttpServlet {
 
 class EmployeeID {
   private int requesterID;
+  private String employeeType;
+
+  /**
+   * @return the employeeType
+   */
+  public String getEmployeeType() {
+    return employeeType;
+  }
 
   /**
    * @return the employeeID
@@ -57,5 +70,12 @@ class EmployeeID {
    */
   public void setRequesterID(int requesterID) {
     this.requesterID = requesterID;
+  }
+
+  /**
+   * @param employeeType the employeeType to set
+   */
+  public void setEmployeeType(String employeeType) {
+    this.employeeType = employeeType;
   }
 }

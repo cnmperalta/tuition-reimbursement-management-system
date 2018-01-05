@@ -364,4 +364,39 @@ public class EmployeeDataAccessObject extends GenericDataAccessObject<Employee> 
     return currentID;
   }
 
+  public List<Employee> getBenefitsCoordinators() {
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    List<Employee> benCos = new LinkedList<Employee>();
+
+    try {
+      String sql = "select * from Employee where EmployeeTypeID=?";
+      ps = connection.prepareStatement(sql);
+      ps.setInt(1, employeeTypesReversed.get("Benefits Coordinator"));
+      rs = ps.executeQuery();
+      populateList(benCos, rs);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if(ps != null && !ps.isClosed()) ps.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+
+      try {
+        if(rs != null && !rs.isClosed()) rs.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return benCos;
+  }
+
+  public Employee getBenefitCoordinator() {
+    List<Employee> benCos = getBenefitsCoordinators();
+    int index = (int) (Math.random()*benCos.size());
+    return benCos.get(index);
+  }
 }

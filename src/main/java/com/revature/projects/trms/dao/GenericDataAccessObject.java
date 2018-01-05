@@ -42,6 +42,6 @@ public abstract class GenericDataAccessObject<T> implements DataAccessObject<T>{
   @Override
   protected void finalize() throws Throwable {
     super.finalize();
-    this.close();
+    // this.close();
   }
 }
