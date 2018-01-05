@@ -7,6 +7,7 @@ import java.util.List;
 public class Reimbursement {
   private int reimbursementId;
   private int requesterId;
+  private int assignTo;
   private String description;
   private String workRelatedJustification;
   private BigDecimal amountRequested;
@@ -20,8 +21,9 @@ public class Reimbursement {
 
   public Reimbursement() {}
 
-  public Reimbursement(int requesterId, String description, String workRelatedJustification, BigDecimal amountRequested, String additionalInformation, String reimbursementStatus, ZonedDateTime dateSubmitted, Event event) {
+  public Reimbursement(int requesterId, int assignTo, String description, String workRelatedJustification, BigDecimal amountRequested, String additionalInformation, String reimbursementStatus, ZonedDateTime dateSubmitted, Event event) {
     this.requesterId = requesterId;
+    this.assignTo = assignTo;
     this.description = description;
     this.workRelatedJustification = workRelatedJustification;
     this.amountRequested = amountRequested;
@@ -34,9 +36,10 @@ public class Reimbursement {
     this.informationRequests = null;
   }
 
-  public Reimbursement(int reimbursementId, int requesterId, String description, String workRelatedJustification, BigDecimal amountRequested, String additionalInformation, String reimbursementStatus, ZonedDateTime dateSubmitted, ZonedDateTime dateCompleted, Event event, ReimbursementResponse response, List<InformationRequest> informationRequests) {
+  public Reimbursement(int reimbursementId, int requesterId, int assignTo, String description, String workRelatedJustification, BigDecimal amountRequested, String additionalInformation, String reimbursementStatus, ZonedDateTime dateSubmitted, ZonedDateTime dateCompleted, Event event, ReimbursementResponse response, List<InformationRequest> informationRequests) {
     this.reimbursementId = reimbursementId;
     this.requesterId = requesterId;
+    this.assignTo = assignTo;
     this.description = description;
     this.workRelatedJustification = workRelatedJustification;
     this.amountRequested = amountRequested;
@@ -47,6 +50,13 @@ public class Reimbursement {
     this.event = event;
     this.response = response;
     this.informationRequests = informationRequests;
+  }
+
+  /**
+   * @return the assignTo
+   */
+  public int getAssignTo() {
+    return assignTo;
   }
 
   /**
@@ -131,6 +141,13 @@ public class Reimbursement {
    */
   public String getWorkRelatedJustification() {
     return workRelatedJustification;
+  }
+
+  /**
+   * @param assignTo the assignTo to set
+   */
+  public void setAssignTo(int assignTo) {
+    this.assignTo = assignTo;
   }
 
   /**

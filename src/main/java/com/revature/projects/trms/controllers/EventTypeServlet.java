@@ -29,6 +29,8 @@ public class EventTypeServlet extends HttpServlet {
     ObjectMapper mapper = new ObjectMapper();
     String jsonResponse = mapper.writeValueAsString(eventTypes);
 
+    etDao.checkConnection();
+
     resp.setContentType("application/json");
     resp.getWriter().write(jsonResponse);
   }

@@ -561,10 +561,12 @@ insert into GradingFormat (GradingFormat) values ('Presentation');
 
 insert into ReimbursementStatus (ReimbursementStatus) values ('Pending');
 insert into ReimbursementStatus (ReimbursementStatus) values ('Approved by Supervisor');
+insert into ReimbursementStatus (ReimbursementStatus) values ('Disapproved by Supervisor');
 insert into ReimbursementStatus (ReimbursementStatus) values ('Approved by Department Head');
+insert into ReimbursementStatus (ReimbursementStatus) values ('Disapproved by Department Head');
 insert into ReimbursementStatus (ReimbursementStatus) values ('Approved by Benefits Coordinator');
+insert into ReimbursementStatus (ReimbursementStatus) values ('Disapproved by Benefits Coordinator');
 insert into ReimbursementStatus (ReimbursementStatus) values ('Pending Grade Submission');
-insert into ReimbursementStatus (ReimbursementStatus) values ('Grade Submitted');
 insert into ReimbursementStatus (ReimbursementStatus) values ('Complete');
 
 -- set Employee Types

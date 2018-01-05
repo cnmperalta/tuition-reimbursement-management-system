@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.projects.trms.beans.Employee;
 import com.revature.projects.trms.dao.EmployeeDataAccessObject;
 
 @WebServlet("/change-password")
@@ -30,8 +29,9 @@ public class ChangePasswordServlet extends HttpServlet {
     HttpSession session = req.getSession();
     String json = req.getReader().lines().collect(Collectors.joining());
     ObjectMapper mapper = new ObjectMapper();
-    Employee emp = null;
     Password p = mapper.readValue(json, Password.class);
+
+    eDao.checkConnection();
 
     eDao.updateAttribute(p.getEmployeeId(), "Password", p.getPassword());
     eDao.updateAttribute(p.getEmployeeId(), "LastLogin", ZonedDateTime.now());

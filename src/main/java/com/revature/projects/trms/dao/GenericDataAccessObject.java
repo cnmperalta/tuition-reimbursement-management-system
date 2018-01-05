@@ -19,6 +19,18 @@ public abstract class GenericDataAccessObject<T> implements DataAccessObject<T>{
     }
   }
 
+  public void checkConnection() {
+    try {
+      if(connection.isClosed()) {
+        connection = ConnectionUtility.getConnection();
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   public void close() {
     try {
       connection.close();
@@ -26,6 +38,7 @@ public abstract class GenericDataAccessObject<T> implements DataAccessObject<T>{
       System.err.println("Error closing connection.");
     }
   }
+
   @Override
   protected void finalize() throws Throwable {
     super.finalize();

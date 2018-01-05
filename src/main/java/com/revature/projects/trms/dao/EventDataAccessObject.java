@@ -20,6 +20,7 @@ import com.revature.projects.trms.beans.EventType;
 public class EventDataAccessObject extends GenericDataAccessObject<Event> {
   private HashMap<Integer, String> gradingFormats;
   private HashMap<String, Integer> gradingFormatsReversed;
+  private HashMap<Integer, String> eventTypes;
   private HashMap<String, Integer> eventTypesReversed;
   private LocationDataAccessObject locationDAO;
   private EventTypeDataAccessObject eventTypeDAO;
@@ -27,6 +28,7 @@ public class EventDataAccessObject extends GenericDataAccessObject<Event> {
   public EventDataAccessObject() {
     gradingFormats = new HashMap<Integer, String>();
     gradingFormatsReversed = new HashMap<String, Integer>();
+    eventTypes = new  HashMap<Integer, String>();
     eventTypesReversed = new HashMap<String,Integer>();
     locationDAO = new LocationDataAccessObject();
     eventTypeDAO = new EventTypeDataAccessObject();
@@ -43,8 +45,10 @@ public class EventDataAccessObject extends GenericDataAccessObject<Event> {
       gradingFormatsReversed.put(gradingFormat.getGradingFormat(), gradingFormat.getGradingFormatId());
     }
 
-    for(EventType eventType : eventTypeList)
+    for(EventType eventType : eventTypeList) {
+      eventTypes.put(eventType.getEventTypeId(), eventType.getEventType());
       eventTypesReversed.put(eventType.getEventType(), eventType.getEventTypeId());
+    }
   }
 
   private void populateList(List<Event> events, ResultSet rs) throws SQLException {
@@ -57,13 +61,15 @@ public class EventDataAccessObject extends GenericDataAccessObject<Event> {
       int eventTypeId = rs.getInt("EventTypeID");
       int gradingFormatId = rs.getInt("GradingFormatID");
 
+      locationDAO.checkConnection();
+
       events.add(new Event(
         eventId,
         eventName,
         startTime,
         cost,
         locationDAO.getById(locationId),
-        eventTypeDAO.getById(eventTypeId).getEventType(),
+        eventTypes.get(eventTypeId),
         gradingFormats.get(gradingFormatId)));
     }
   }
@@ -118,13 +124,15 @@ public class EventDataAccessObject extends GenericDataAccessObject<Event> {
         int eventTypeId = rs.getInt("EventTypeID");
         int gradingFormatId = rs.getInt("GradingFormatID");
 
+        locationDAO.checkConnection();
+
         event = new Event(
           eventId,
           eventName,
           startTime,
           cost,
           locationDAO.getById(locationId),
-          eventTypeDAO.getById(eventTypeId).getEventType(),
+          eventTypes.get(eventTypeId),
           gradingFormats.get(gradingFormatId));
       }
     } catch (SQLException e) {

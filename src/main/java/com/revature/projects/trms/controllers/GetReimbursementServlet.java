@@ -1,7 +1,6 @@
 package com.revature.projects.trms.controllers;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -14,9 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.projects.trms.beans.Reimbursement;
 import com.revature.projects.trms.dao.ReimbursementDataAccessObject;
 
-@WebServlet("/get-reimbursements")
-public class GetReimbursementsServlet extends HttpServlet {
-  private static final long serialVersionUID = 6L;
+@WebServlet("/get-reimbursement")
+public class GetReimbursementServlet extends HttpServlet {
+  private static final long serialVersionUID = 9L;
   private ReimbursementDataAccessObject rDao;
 
   @Override
@@ -26,36 +25,35 @@ public class GetReimbursementsServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    List<Reimbursement> reimbursements = null;
     String json = req.getReader().lines().collect(Collectors.joining());
-    ObjectMapper mapper = new ObjectMapper();;
-    EmployeeID eid = mapper.readValue(json, EmployeeID.class);
+    Reimbursement r = null;
+    ObjectMapper mapper = new ObjectMapper();
+    ReimbursementID rid = mapper.readValue(json, ReimbursementID.class);
     String jsonResponse = null;
-
+    
     rDao.checkConnection();
-
-    reimbursements = rDao.getByAttribute("RequesterID", eid.getRequesterID());
-    jsonResponse = mapper.writeValueAsString(reimbursements);
-    System.out.println(jsonResponse);
+    r = rDao.getById(rid.getReimbursementID());
+    jsonResponse = mapper.writeValueAsString(r);
     resp.getWriter().write(jsonResponse);
     resp.setContentType("application/json");
   }
 }
 
-class EmployeeID {
-  private int requesterID;
+class ReimbursementID {
+  private int reimbursementID;
 
   /**
-   * @return the employeeID
+   * @return the reimbursementID
    */
-  public int getRequesterID() {
-    return requesterID;
+  public int getReimbursementID() {
+    return reimbursementID;
   }
 
   /**
-   * @param employeeID the employeeID to set
+   * @param reimbursementID the reimbursementID to set
    */
-  public void setRequesterID(int requesterID) {
-    this.requesterID = requesterID;
+  public void setReimbursementID(int reimbursementID) {
+    this.reimbursementID = reimbursementID;
   }
+
 }

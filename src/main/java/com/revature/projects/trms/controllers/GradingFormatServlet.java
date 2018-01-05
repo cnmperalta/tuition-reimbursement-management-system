@@ -28,6 +28,8 @@ public class GradingFormatServlet extends HttpServlet {
     List<GradingFormat> gradingFormats = gfDao.getAll();
     ObjectMapper mapper = new ObjectMapper();
     String jsonResponse = mapper.writeValueAsString(gradingFormats);
+
+    gfDao.checkConnection();
     
     resp.setContentType("application/json");
     resp.getWriter().write(jsonResponse);

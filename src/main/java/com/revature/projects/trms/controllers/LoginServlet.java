@@ -45,15 +45,15 @@ public class LoginServlet extends HttpServlet {
     SessionInformation si = null;
     String jsonResponse = null;
 
+    eDao.checkConnection();
+    dDao.checkConnection();
+    etDao.checkConnection();
+
     System.out.println(json);
     lc = mapper.readValue(json, LoginCredentials.class);
     emp = eDao.getByEmailAddress(lc.getEmailAddress());
-    System.out.println("Employee: " + emp);
-    System.out.println("Department ID: " + emp.getDepartmentId());
     dept = dDao.getById(emp.getDepartmentId());
-    System.out.println("Department: " + dept);
     empType = etDao.getById(emp.getEmployeeTypeId());
-    System.out.println("Employee Type: " + empType);
 
     System.out.println(emp);
 
@@ -63,7 +63,6 @@ public class LoginServlet extends HttpServlet {
       si = new SessionInformation(emp.getEmployeeId(), emp.getDirectSupervisorId(), dept.getDepartmentHeadId(), empType.getEmployeeType(), emp.getLastLogin(), false);
     
     session.setAttribute("EmployeeID", emp.getEmployeeId());
-    System.out.println("EmployeeID in Login: " + session.getAttribute("EmployeeID"));
 
     jsonResponse = mapper.writeValueAsString(si);
     System.out.println(jsonResponse);

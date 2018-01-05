@@ -13,13 +13,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.projects.trms.beans.Event;
 import com.revature.projects.trms.beans.Location;
 import com.revature.projects.trms.beans.Reimbursement;
-import com.revature.projects.trms.dao.EmployeeDataAccessObject;
 import com.revature.projects.trms.dao.EventDataAccessObject;
 import com.revature.projects.trms.dao.LocationDataAccessObject;
 import com.revature.projects.trms.dao.ReimbursementDataAccessObject;
@@ -28,14 +26,12 @@ import com.revature.projects.trms.dao.ReimbursementDataAccessObject;
 public class NewReimbursementServlet extends HttpServlet {
   private static final long serialVersionUID = 7L;
   private ReimbursementDataAccessObject rDao;
-  private EmployeeDataAccessObject emDao;
   private EventDataAccessObject evDao;
   private LocationDataAccessObject lDao;
 
   @Override
   public void init() throws ServletException {
     rDao = new ReimbursementDataAccessObject();
-    emDao = new EmployeeDataAccessObject();
     evDao = new EventDataAccessObject();
     lDao = new LocationDataAccessObject();
   }
@@ -45,6 +41,11 @@ public class NewReimbursementServlet extends HttpServlet {
     String json = req.getReader().lines().collect(Collectors.joining());
     ObjectMapper mapper = new ObjectMapper();
     ReimbursementInformation ri = mapper.readValue(json, ReimbursementInformation.class);
+    ZonedDateTime zdt = LocalDate.parse(ri.getStartDate()).atStartOfDay(ZoneId.systemDefault());
+
+    rDao.checkConnection();
+    evDao.checkConnection();
+    lDao.checkConnection();
 
     Location l = new Location(
       ri.getStreetAddress1(),
@@ -53,17 +54,21 @@ public class NewReimbursementServlet extends HttpServlet {
       ri.getState(),
       ri.getZipCode(),
       ri.getCountry()
-    );
+    );    
+
     Event e = new Event(
       ri.getEventName(),
-      LocalDate.parse(ri.getStartDate()).atStartOfDay(ZoneId.systemDefault()),
+      zdt,
       ri.getCost(),
       l,
       ri.getEventType(),
       ri.getGradingFormat()
     );
+
+    
     Reimbursement r = new Reimbursement(
       ri.getEmployeeId(),
+      ri.getSupervisorId(),
       ri.getDescription(),
       ri.getJustification(),
       ri.getAmountRequest(),
@@ -73,8 +78,10 @@ public class NewReimbursementServlet extends HttpServlet {
       e
     );
     
-    // lDao.createNew(l);
+    lDao.createNew(l);
+    l.setLocationId(lDao.getCurrentID());
     evDao.createNew(e);
+    e.setEventId(evDao.getCurrentID());
     rDao.createNew(r);
     System.out.println("Reimbursement inserted.");
   }

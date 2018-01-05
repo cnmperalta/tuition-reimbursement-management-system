@@ -54,6 +54,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 		while(rs.next()) {
 			int reimbursementId = rs.getInt("ReimbursementID");
 			int requesterId = rs.getInt("RequesterID");
+			int assignTo = rs.getInt("AssignTo");
 			String description = rs.getString("Description");
 			String workRelatedJustification = rs.getString("WorkRelatedJustification");
 			BigDecimal amountRequested = rs.getBigDecimal("ReimbursementAmountRequested");
@@ -64,6 +65,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 			int eventId = rs.getInt("EventID");
 			int reimbursementResponseId = rs.getInt("ReimbursementResponseID");
 			
+			eventDao.checkConnection();
 			event = eventDao.getById(eventId);
 			infoRequests = informationRequestDao.getByAttribute("ReimbursementID", reimbursementId);
 			reimResponse = reimbursementResponseDao.getById(reimbursementResponseId);
@@ -72,6 +74,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 			reimbursements.add(new Reimbursement(
 				reimbursementId,
 				requesterId,
+				assignTo,
 				description,
 				workRelatedJustification,
 				amountRequested,
@@ -135,6 +138,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 				ReimbursementResponse reimResponse = null;
 				int reimbursementId = rs.getInt("ReimbursementID");
 				int requesterId = rs.getInt("RequesterID");
+				int assignTo = rs.getInt("AssignTo");
 				String description = rs.getString("Description");
 				String workRelatedJustification = rs.getString("WorkRelatedJustification");
 				BigDecimal amountRequested = rs.getBigDecimal("ReimbursementAmountRequested");
@@ -145,6 +149,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 				int eventId = rs.getInt("EventID");
 				int reimbursementResponseId = rs.getInt("ReimbursementResponseID");
 				
+				eventDao.checkConnection();
 				event = eventDao.getById(eventId);
 				infoRequests = informationRequestDao.getByAttribute("ReimbursementID", reimbursementId);
 				reimResponse = reimbursementResponseDao.getById(reimbursementResponseId);
@@ -153,6 +158,7 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 				reimbursement = new Reimbursement(
 					reimbursementId,
 					requesterId,
+					assignTo,
 					description,
 					workRelatedJustification,
 					amountRequested,
@@ -204,9 +210,9 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 			else
 				ps.setString(1, (String) attributeValue);
 
-				rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
-				populateList(reimbursements, rs);
+			populateList(reimbursements, rs);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -231,17 +237,28 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 		PreparedStatement ps = null;
 
 		try {
-			String sql = "insert into Reimbursement (RequesterID, Description, WorkRelatedJustification, ReimbursementAmountRequested, AdditionalInformation, ReimbursementStatusID, DateSubmitted, EventID) values (?, ?, ?, ?, ?, ?, ?, ?)";
+			String sql = "insert into Reimbursement (RequesterID, AssignTo, Description, WorkRelatedJustification, ReimbursementAmountRequested, AdditionalInformation, ReimbursementStatusID, DateSubmitted, EventID) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			ps = connection.prepareStatement(sql);
-			ps.setInt(1, e.getReimbursementId());
-			ps.setString(2, e.getDescription());
-			ps.setString(3, e.getWorkRelatedJustification());
-			ps.setBigDecimal(4, e.getAmountRequested());
-			ps.setString(5, e.getAdditionalInformation());
-			ps.setInt(6, reimbursementStatusesReversed.get(e.getReimbursementStatus()));
-			ps.setTimestamp(7, Timestamp.from(e.getDateSubmitted().toInstant()));
-			ps.setInt(8, e.getEvent().getEventId());
+			
+			ps.setInt(1, e.getRequesterId());
+			// System.out.println("RequesterID: " + e.getRequesterId());
+			ps.setInt(2, e.getAssignTo());
+			// System.out.println("AssignTo: " + e.getAssignTo());
+			ps.setString(3, e.getDescription());
+			// System.out.println("Description: " + e.getDescription());
+			ps.setString(4, e.getWorkRelatedJustification());
+			// System.out.println("Justification: " + e.getWorkRelatedJustification());
+			ps.setBigDecimal(5, e.getAmountRequested());
+			// System.out.println("Amount Requested: " + e.getAmountRequested());
+			ps.setString(6, e.getAdditionalInformation());
+			// System.out.println("Additional Information: " + e.getAdditionalInformation());
+			ps.setInt(7, reimbursementStatusesReversed.get(e.getReimbursementStatus()));
+			// System.out.println("Reimbursement Status: " + reimbursementStatusesReversed.get(e.getReimbursementStatus()));
+			ps.setTimestamp(8, Timestamp.from(e.getDateSubmitted().toInstant()));
+			// System.out.println("Date Submitted: " + Timestamp.from(e.getDateSubmitted().toInstant()));
+			ps.setInt(9, e.getEvent().getEventId());
+			// System.out.println("Event ID: " + e.getEvent().getEventId());
 
 			ps.execute();
 		} catch (SQLException ex) {

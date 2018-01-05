@@ -65,6 +65,7 @@ public class LocationDataAccessObject extends GenericDataAccessObject<Location> 
     try {
       String sql = "select * from Location where LocationID=?";
       ps = connection.prepareStatement(sql);
+      ps.setInt(1, id);
       rs = ps.executeQuery();
 
       if(rs.next()) {
