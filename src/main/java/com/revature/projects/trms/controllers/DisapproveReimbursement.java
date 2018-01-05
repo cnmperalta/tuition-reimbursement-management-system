@@ -42,8 +42,6 @@ public class DisapproveReimbursement extends HttpServlet {
     DisapprovalInformation di = mapper.readValue(json, DisapprovalInformation.class);
     int newStatus = 0;
 
-    System.out.println(json);
-
     if(di.getDisapproverEmployeeType().equals("Supervisor"))
       newStatus = reimbursementStatuses.get("Disapproved by Supervisor");
     else if(di.getDisapproverEmployeeType().equals("Department Head"))
@@ -51,9 +49,7 @@ public class DisapproveReimbursement extends HttpServlet {
     else if(di.getDisapproverEmployeeType().equals("Benefits Coordinator"))
       newStatus = reimbursementStatuses.get("Disapproved by Benefits Coordinator");
     
-    System.out.println("New Status: " + newStatus);
     rDao.checkConnection();
-    System.out.println("New Status: " + newStatus);
     rDao.updateAttribute(di.getReimbursementId(), "AssignTo", 0);
     rDao.updateAttribute(di.getReimbursementId(), "ReimbursementStatusID", newStatus);
   }

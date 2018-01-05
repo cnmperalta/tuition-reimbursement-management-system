@@ -85,7 +85,6 @@ public class EventTypeDataAccessObject extends GenericDataAccessObject<EventType
         e.printStackTrace();
       }
     }
-    System.out.println("Returning: " + eventType);
 		return eventType;
 	}
 

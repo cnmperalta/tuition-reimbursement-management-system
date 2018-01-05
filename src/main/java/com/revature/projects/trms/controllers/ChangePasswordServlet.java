@@ -26,7 +26,6 @@ public class ChangePasswordServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    HttpSession session = req.getSession();
     String json = req.getReader().lines().collect(Collectors.joining());
     ObjectMapper mapper = new ObjectMapper();
     Password p = mapper.readValue(json, Password.class);
@@ -35,8 +34,6 @@ public class ChangePasswordServlet extends HttpServlet {
 
     eDao.updateAttribute(p.getEmployeeId(), "Password", p.getPassword());
     eDao.updateAttribute(p.getEmployeeId(), "LastLogin", ZonedDateTime.now());
-    System.out.println("Employee updated.");
-    session.setAttribute("LoggedIn", true);
     mapper.writeValue(resp.getOutputStream(), new LoggedIn(true));
   }
 }

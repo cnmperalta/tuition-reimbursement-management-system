@@ -49,9 +49,7 @@ public class ApproveReimbursementServlet extends HttpServlet {
     int newStatus = 0;
 
     rDao.checkConnection();
-    System.out.println(reimbursementStatuses.get("Approved by Supervisor"));
     if(ai.getApproverEmployeeType().equalsIgnoreCase("Supervisor")) {
-      System.out.println("Approved by Supervisor");
       newAssignTo = dDao.getById(eDao.getById(ai.getRequesterId()).getDepartmentId()).getDepartmentHeadId();
       newStatus = reimbursementStatuses.get("Approved by Supervisor");
     }

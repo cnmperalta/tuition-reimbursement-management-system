@@ -236,7 +236,7 @@ public class EmployeeDataAccessObject extends GenericDataAccessObject<Employee> 
       try {
         if(ps != null && !ps.isClosed()) ps.close();
       } catch (SQLException ex) {
-        System.out.println("Error closing PreparedStatement after inserting to Employee.");
+        System.err.println("Error closing PreparedStatement after inserting to Employee.");
         ex.printStackTrace();
       }
     }

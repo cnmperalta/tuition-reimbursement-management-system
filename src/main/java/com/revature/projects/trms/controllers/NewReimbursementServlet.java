@@ -83,7 +83,6 @@ public class NewReimbursementServlet extends HttpServlet {
     evDao.createNew(e);
     e.setEventId(evDao.getCurrentID());
     rDao.createNew(r);
-    System.out.println("Reimbursement inserted.");
   }
 }
 

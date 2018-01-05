@@ -41,7 +41,6 @@ public class GetReimbursementsServlet extends HttpServlet {
     }
     
     jsonResponse = mapper.writeValueAsString(reimbursements);
-    System.out.println(jsonResponse);
     resp.getWriter().write(jsonResponse);
     resp.setContentType("application/json");
   }

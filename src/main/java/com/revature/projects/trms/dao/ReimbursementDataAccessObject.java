@@ -244,23 +244,14 @@ public class ReimbursementDataAccessObject extends GenericDataAccessObject<Reimb
 			ps = connection.prepareStatement(sql);
 			
 			ps.setInt(1, e.getRequesterId());
-			// System.out.println("RequesterID: " + e.getRequesterId());
 			ps.setInt(2, e.getAssignTo());
-			// System.out.println("AssignTo: " + e.getAssignTo());
 			ps.setString(3, e.getDescription());
-			// System.out.println("Description: " + e.getDescription());
 			ps.setString(4, e.getWorkRelatedJustification());
-			// System.out.println("Justification: " + e.getWorkRelatedJustification());
 			ps.setBigDecimal(5, e.getAmountRequested());
-			// System.out.println("Amount Requested: " + e.getAmountRequested());
 			ps.setString(6, e.getAdditionalInformation());
-			// System.out.println("Additional Information: " + e.getAdditionalInformation());
 			ps.setInt(7, reimbursementStatusesReversed.get(e.getReimbursementStatus()));
-			// System.out.println("Reimbursement Status: " + reimbursementStatusesReversed.get(e.getReimbursementStatus()));
 			ps.setTimestamp(8, Timestamp.from(e.getDateSubmitted().toInstant()));
-			// System.out.println("Date Submitted: " + Timestamp.from(e.getDateSubmitted().toInstant()));
 			ps.setInt(9, e.getEvent().getEventId());
-			// System.out.println("Event ID: " + e.getEvent().getEventId());
 
 			ps.execute();
 		} catch (SQLException ex) {

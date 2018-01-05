@@ -77,7 +77,6 @@ public class LoginServlet extends HttpServlet {
     session.setAttribute("EmployeeID", emp.getEmployeeId());
 
     jsonResponse = mapper.writeValueAsString(si);
-    System.out.println(jsonResponse);
 
     resp.setContentType("application/json");
     resp.getWriter().write(jsonResponse);
