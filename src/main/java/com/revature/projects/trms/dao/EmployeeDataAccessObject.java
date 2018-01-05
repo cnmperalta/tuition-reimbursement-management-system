@@ -157,7 +157,6 @@ public class EmployeeDataAccessObject extends GenericDataAccessObject<Employee> 
         int employeeId = rs.getInt("EmployeeID");
         String firstName = rs.getString("FirstName");
         String lastName = rs.getString("LastName");
-        // String emailAddress = rs.getString("EmailAddress");
         String password = rs.getString("Password");
         String salt = rs.getString("Salt");
         ZonedDateTime lastLogin = rs.getObject("LastLogin", ZonedDateTime.class);

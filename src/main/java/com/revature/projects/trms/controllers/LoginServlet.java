@@ -51,22 +51,29 @@ public class LoginServlet extends HttpServlet {
 
     lc = mapper.readValue(json, LoginCredentials.class);
     emp = eDao.getByEmailAddress(lc.getEmailAddress());
-    System.out.println("Department ID: " + emp.getDepartmentId());
-    System.out.println("EmployeeType: " + emp.getEmployeeTypeId());
-    dept = dDao.getById(emp.getDepartmentId());
     empType = etDao.getById(emp.getEmployeeTypeId());
-
-    System.out.println(emp.getDepartmentId());
+    if(empType.getEmployeeType().equals("Benefits Coordinator"))
+      dept = null;
+    else
+      dept = dDao.getById(emp.getDepartmentId());
+    
 
     if(lc.getPassword().equals(emp.getPassword())) {
-      if(emp.getLastLogin() != null)
-        si = new SessionInformation(emp.getEmployeeId(), emp.getDirectSupervisorId(), dept.getDepartmentHeadId(), empType.getEmployeeType(), emp.getLastLogin(), true);
-      else
-        si = new SessionInformation(emp.getEmployeeId(), emp.getDirectSupervisorId(), dept.getDepartmentHeadId(), empType.getEmployeeType(), emp.getLastLogin(), false);
+      if(empType.getEmployeeType().equals("Benefits Coordinator")) {
+        if(emp.getLastLogin() != null) {
+          si = new SessionInformation(emp.getEmployeeId(), 0, 0, empType.getEmployeeType(), emp.getLastLogin(), true);
+        } else {
+          si = new SessionInformation(emp.getEmployeeId(), 0, 0, empType.getEmployeeType(), emp.getLastLogin(), false);
+        }
+      } else {
+        if(emp.getLastLogin() != null)
+          si = new SessionInformation(emp.getEmployeeId(), emp.getDirectSupervisorId(), dept.getDepartmentHeadId(), empType.getEmployeeType(), emp.getLastLogin(), true);
+        else
+          si = new SessionInformation(emp.getEmployeeId(), emp.getDirectSupervisorId(), dept.getDepartmentHeadId(), empType.getEmployeeType(), emp.getLastLogin(), false);
+      } 
     } else
       si = new SessionInformation(0,0,0, "Invalid Login", null, false);
-    
-    
+
     session.setAttribute("EmployeeID", emp.getEmployeeId());
 
     jsonResponse = mapper.writeValueAsString(si);
